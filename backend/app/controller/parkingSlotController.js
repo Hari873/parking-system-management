@@ -1,0 +1,28 @@
+const Slot = require('../model/parkingSlot-model');
+const { parkingSlotSchema } = require('../validator/validator.js');
+const slotCtlr = {};
+
+slotCtlr.create = async (req, res) => {
+    const body = req.body;
+    const { error, value } = parkingSlotSchema.validate(body, { abortEarly: false });
+    if (error) {
+        return res.status(400).json({ error: error.details.map(ele => ele.message) })
+    }
+    try {
+        const { slotNumber } = value;
+        const found = await Slot.findOne({ slotNumber })
+        if (found) {
+            return res.status(400).json({ error: "Duplicate" })
+        }
+        const newSlot = new Slot(value);
+        newSlot.isOccupied = false;
+        await newSlot.save();
+        res.status(201).json(newSlot);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: "Something went wrong!" });
+    }
+
+}
+
+module.exports = slotCtlr;
