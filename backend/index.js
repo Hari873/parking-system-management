@@ -16,10 +16,10 @@ app.use(cors());
 app.use(express.json());
 
 app.use(morgan('common', { stream: fs.createWriteStream(path.join(__dirname, 'access.log'), { flag: 'a' }) }))
-
-app.post('/api/slot', slotCtlr.create);
+app.get('/api/slot/:slotNumber', slotCtlr.read);
+app.post('/api/slot/create', slotCtlr.create);
 app.post('/api/ticket/create', createTicket);
-app.post('/api/ticket/exit', exit);
+app.patch('/api/ticket/exit', exit);
 
 app.listen(port, () => {
     console.log("The server is running on port " + port);

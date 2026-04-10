@@ -21,7 +21,7 @@ export default function SlotPage() {
             return;
         } if (slotNumber != "" && slotType != "") {
             try {
-                const response = await axios.post('http://localhost:4000/api/slot', {
+                const response = await axios.post('http://localhost:3600/api/slot/create', {
                     slotNumber, slotType
                 });
                 console.log("Sucess", response.data);

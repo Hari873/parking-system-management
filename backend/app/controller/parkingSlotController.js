@@ -22,7 +22,35 @@ slotCtlr.create = async (req, res) => {
         console.log(err);
         res.status(500).json({ error: "Something went wrong!" });
     }
+}
 
+slotCtlr.read = async (req, res) => {
+    try {
+        const slotNumber = req.params.slotNumber;
+        const slot = await Slot.findOne({ slotNumber }).lean();
+
+        if (!slot) {
+            return res.status(404).json({ error: "Slot not found" });
+        }
+
+        let result = { ...slot };
+
+        if (slot.isOccupied) {
+            const Ticket = require('../model/parkingTicket-model');
+            const activeTicket = await Ticket.findOne({ slot: slot._id, isActive: true }).populate('vehicle').lean();
+            if (activeTicket) {
+                result.vehicleNumber = activeTicket.vehicle.vehicleNumber;
+                result.vehicleType = activeTicket.vehicle.vehicleType;
+                result.ticketNumber = activeTicket.ticketNumber;
+                result.entryTime = activeTicket.entryTime;
+            }
+        }
+
+        res.status(200).json(result);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: "Something went wrong!" });
+    }
 }
 
 module.exports = slotCtlr;

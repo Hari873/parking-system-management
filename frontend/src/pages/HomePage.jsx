@@ -24,7 +24,7 @@ export default function HomePage() {
             return;
         } if (vehicleNumber != "" && vehicleType != "") {
             try {
-                const response = await axios.post('http://localhost:4000/api/ticket/create', {
+                const response = await axios.post('http://localhost:3600/api/ticket/create', {
                     vehicleNumber, vehicleType
                 });
                 console.log("Sucess", response.data);
@@ -43,7 +43,7 @@ export default function HomePage() {
     }
     return (
         <div>
-            <h2>HomePage</h2>
+            <h2>TicketPage</h2>
 
             <form onSubmit={handleSubmit}>
                 <label>Vehicle Number </label>

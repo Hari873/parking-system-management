@@ -103,14 +103,18 @@ parkingTicketCtlr.createTicket = async(req, res) => {
                 }
             }
             exitTicket.isActive = false;
+            exitTicket.exitTime = exitTime;
             await exitTicket.save();
             
             await Slot.findByIdAndUpdate(exitTicket.slot, {isOccupied: false});
 
+            const populatedTicket = await Ticket.findById(exitTicket._id).populate('vehicle').populate('slot').lean();
+
             res.status(200).json({
                 hours,
                 amount: exitTicket.amount,
-                message: "Thank you"
+                message: "Thank you",
+                ticket: populatedTicket
             })
         }
         catch(err){
